@@ -36,7 +36,7 @@ function problemA () {
    */
 
   // callback version
-  async.each(['poem-two/stanza-01.txt', 'poem-two/stanza-02.txt'],
+  /*async.each(['poem-two/stanza-01.txt', 'poem-two/stanza-02.txt'],
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
         console.log('-- A. callback version --');
@@ -50,9 +50,18 @@ function problemA () {
   );
 
   // promise version
-  // ???
+  // ???  */
+    const poem1 = promisifiedReadFile('poem-two/stanza-01.txt');
+    const poem2 = promisifiedReadFile('poem-two/stanza-02.txt');
 
-}
+    Promise.all ([poem1, poem2]) // se guarda la cantidad de elementos que se tenga para ejecutar/leer ...
+    .then ((stanzas) => {   //aqui se guarda el resultado de la busqueda de promiseOne (poem1) y promiseTwo (poem2)
+      blue(stanzas[0]);     // se muestran en consola con cada blue
+      blue(stanzas[1]);
+      console.log('done')
+    })
+
+}     //✅✅ PASADA
 
 function problemB () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -67,9 +76,9 @@ function problemB () {
   var filenames = [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) {
     return 'poem-two/' + 'stanza-0' + n + '.txt';
   });
-
-  // callback version
-  async.each(filenames,
+/*
+  // callback version 
+    async.each(filenames,
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
         console.log('-- B. callback version --');
@@ -83,9 +92,16 @@ function problemB () {
   );
 
   // promise version
-  // ???
+  // ??? */
 
-}
+  const promises = filenames.map( f => promisifiedReadFile(f).then(stx => blue(stx)))
+
+  Promise.all(promises)
+  .then(() => {
+    console.log('done')
+  })
+
+} //✅✅ PASADA
 
 function problemC () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -101,7 +117,7 @@ function problemC () {
   var filenames = [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) {
     return 'poem-two/' + 'stanza-0' + n + '.txt';
   });
-
+/*
   // callback version
   async.eachSeries(filenames,
     function (filename, eachDone) {
@@ -117,9 +133,19 @@ function problemC () {
   );
 
   // promise version
-  // ???
+  // ??? */
+filenames.reduce((p, file) => {
+  return p.then ((stanza) => {
+    if (stanza) blue(stanza);
+    return promisifiedReadFile(file)
+  })
+}, Promise.resolve(false))
+.then((stanza) => {
+  blue(stanza);
+  console.log('done')
+})
 
-}
+} //✅✅ PASADA
 
 function problemD () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -139,7 +165,7 @@ function problemD () {
   filenames[randIdx] = 'wrong-file-name-' + (randIdx + 1) + '.txt';
 
   // callback version
-  async.eachSeries(filenames,
+  /* async.eachSeries(filenames,
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
         console.log('-- D. callback version --');
@@ -155,9 +181,23 @@ function problemD () {
   );
 
   // promise version
-  // ???
+  // ??? */
 
-}
+  filenames.reduce((p, file) => {
+    return p.then ((stanza) => {
+      if (stanza) blue(stanza);
+      return promisifiedReadFile(file)
+    })
+  }, Promise.resolve(false))
+  .then((stanza) => {
+    blue(stanza);
+  })
+  .catch(err => {
+    magenta(new Error(err))
+    console.log('done')
+
+})
+} //✅✅ PASADA
 
 function problemE () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *

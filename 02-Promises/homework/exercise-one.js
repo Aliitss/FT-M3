@@ -44,15 +44,20 @@ function problemA () {
    */
 
   // callback version
-  readFile('poem-one/stanza-01.txt', function (err, stanza) {
+  /*readFile('poem-one/stanza-01.txt', function (err, stanza) {
     console.log('-- A. callback version --');
     blue(stanza);
-  });
+  });*/
 
   // promise version
   // ???
 
-}
+  promisifiedReadFile('poem-one/stanza-01.txt')         //aquí prometemos que vamos a leer este archivo
+  /*.then(st => {
+    blue(st)
+  })*/
+  .then(blue)       //esto es una definición de ejecución, ambas formas funcionan (linea 56 y/o linea 59 uwu)
+} //✅
 
 function problemB () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -63,7 +68,7 @@ function problemB () {
    */
 
   // callback version
-  readFile('poem-one/stanza-02.txt', function (err, stanza2) {
+  /*readFile('poem-one/stanza-02.txt', function (err, stanza2) {
     console.log('-- B. callback version (stanza two) --');
     blue(stanza2);
   });
@@ -73,9 +78,17 @@ function problemB () {
   });
 
   // promise version
-  // ???
+  // ??? */
+  promisifiedReadFile('poem-one/stanza-02.txt')
+  .then(st2 => {
+    blue(st2)
+  })
+ promisifiedReadFile('poem-one/stanza-03.txt')
+ .then(st3 => {
+  blue(st3)
+ })
 
-}
+} // ✅✅ PASADA
 
 function problemC () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -89,7 +102,7 @@ function problemC () {
    */
 
   // callback version
-  readFile('poem-one/stanza-02.txt', function (err, stanza2) {
+  /*readFile('poem-one/stanza-02.txt', function (err, stanza2) {
     console.log('-- C. callback version (stanza two) --');
     blue(stanza2);
     readFile('poem-one/stanza-03.txt', function (err, stanza3) {
@@ -100,8 +113,16 @@ function problemC () {
   });
 
   // promise version (hint: don't need to nest `then` calls)
-  // ???
-
+  // ??? */
+  promisifiedReadFile('poem-one/stanza-02.txt')
+  .then(st2 =>{
+    blue(st2)
+    return promisifiedReadFile('poem-one/stanza-03.txt')
+  })
+  .then(st3 => {
+    blue(st3)
+    console.log('done')
+  })
 }
 
 function problemD () {
@@ -112,16 +133,22 @@ function problemD () {
    */
 
   // callback version
-  readFile('poem-one/wrong-file-name.txt', function (err, stanza4) {
+  /*readFile('poem-one/wrong-file-name.txt', function (err, stanza4) {
     console.log('-- D. callback version (stanza four) --');
     if (err) magenta(new Error(err));
     else blue(stanza4);
   });
 
   // promise version
-  // ???
+  // ??? */
+  promisifiedReadFile('poem-one/wrong-file-name.txt')
+  .then(st4 => {
+    blue(st4)
+  }, err => {
+    magenta(new Error(err))
+  })
 
-}
+}       //✅✅ PASADA
 
 function problemE () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -133,7 +160,7 @@ function problemE () {
    */
 
   // callback version
-  readFile('poem-one/stanza-03.txt', function (err, stanza3) {
+  /*readFile('poem-one/stanza-03.txt', function (err, stanza3) {
     console.log('-- E. callback version (stanza three) --');
     if (err) return magenta(new Error(err));
     blue(stanza3);
@@ -145,9 +172,19 @@ function problemE () {
   });
 
   // promise version
-  // ???
+  // ???*/
+  promisifiedReadFile('poem-one/stanza-03.txt')
+  .then(st3 => {
+    blue(st3)
+    return promisifiedReadFile('poem-one/wrong-file-name.txt')
+  })
+  .then(st4 => {
+    blue(st4)
+  }, err2 => {
+    magenta(new Error(err2))
+  })
 
-}
+}        //✅✅ PASADA
 
 function problemF () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -159,7 +196,7 @@ function problemF () {
    */
 
   // callback version
-  readFile('poem-one/stanza-03.txt', function (err, stanza3) {
+  /* readFile('poem-one/stanza-03.txt', function (err, stanza3) {
     console.log('-- F. callback version (stanza three) --');
     if (err) {
       magenta(new Error(err));
@@ -176,6 +213,20 @@ function problemF () {
   });
 
   // promise version
-  // ???
+  // ??? */
 
-}
+  promisifiedReadFile('poem-one/stanza-03.txt')
+  .then(st3 => {
+    blue(st3)
+    return promisifiedReadFile('poem-one/wrong-file-name.txt')
+  })
+  .then(st4 => {
+    blue(st4)
+  }, err2 => {
+    magenta(new Error(err2))
+  })
+  .finally(() => console.log('done'))
+
+
+
+} //✅✅ PASADA
