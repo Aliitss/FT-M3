@@ -34,43 +34,78 @@ function $Promise(executor) {
         if (typeof successCb !== 'function') successCb = false
         if (typeof errorCb !== 'function') errorCb = false
 
+        const downstreamPromise = new $Promise(function(){
+            
+        })
+
         this._handlerGroups.push({
             successCb,
-            errorCb
+            errorCb,
+            downstreamPromise
         })
         if (this._state !== 'pending'){
             this._callHandlers()
+            
         }
+        return downstreamPromise
     }
 
     $Promise.prototype._callHandlers = function(){
         while (this._handlerGroups.length){
             let handler = this._handlerGroups.shift()
             if (this._state === 'fulfilled'){
-                handler.successCb && handler.successCb(this._value)
+                /* handler.successCb && handler.successCb(this._value) */
+                if(!handler.successCb){
+                    handler.downstreamPromise._internalResolve(this._value)
+                }else{
+                    try {
+                        const result = handler.successCb(this._value)
+                        if (result instanceof $Promise){
+                            result.then(value => {
+                                handler.downstreamPromise._internalResolve(value)
+                            }, err => {
+                                handler.downstreamPromise._internalReject(err)
+                            })
+                        }else{
+                            handler.downstreamPromise._internalResolve(result)
+                        }
+                    } catch (error) {
+                        handler.downstreamPromise._internalReject(error)
+                    }
+                }
             } else {
-                handler.errorCb&& handler.errorCb(this._value)
+                //handler.errorCb&& handler.errorCb(this._value)
+                if (!handler.errorCb){
+                    handler.downstreamPromise._internalReject(this._value)
+                }else{
+                    try {
+                        const result = handler.errorCb(this._value)
+                        if(result instanceof $Promise){
+                            result.then(value => {
+                                handler.downstreamPromise._internalResolve(value)
+                            }, err => {
+                                handler.downstreamPromise._internalReject(err) 
+                            })
+                        }else {
+                            handler.downstreamPromise._internalResolve(result)
+                        }
+                    } catch (error) {
+                        handler.downstreamPromise._internalReject(error)                        
+                    }
+                }
             }
         }
     }
 
     $Promise.prototype.catch = function(errorCb){
-        this.then(null, errorCb)
+        return this.then(null, errorCb)
 
     }
 
 
 
 
-
-
-
-
-
-
-
-
-module.exports = $Promise;
+    module.exports = $Promise;
 /*-------------------------------------------------------
 El spec fue diseñado para funcionar con Test'Em, por lo tanto no necesitamos
 realmente usar module.exports. Pero aquí está para referencia:
