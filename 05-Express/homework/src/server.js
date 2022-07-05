@@ -95,7 +95,7 @@ server.get ('/posts/:author/:title', (req, res)=>{
 
 })
 
-server.put ('/posts', (req, res)=> {
+/* server.put ('/posts', (req, res)=> {
     const { id, title, contents } = req.body;
 
     if(!id || !title || !contents){
@@ -131,6 +131,59 @@ server.delete ('/posts', (req, res) =>{
     posts = posts.filter(p=> p.id === id)
     res.json({ success: true })
 
+}) */
+
+server.put("/posts",(req, res, next)=>{
+    const {id, title, contents } = req.body;
+  if(!id || !title || !contents){
+    return res.status(STATUS_USER_ERROR).send({error: "No se recibieron los parámetros necesarios para modificar el Post"})
+  }
+
+  const post = posts.find(post => post.id === id)
+
+  if(!post){
+    return res.status(STATUS_USER_ERROR).send({error: "El id indicado no corresponde con un Post existente"
+    })
+  }
+
+  post.title = title
+  post.contents = contents
+
+  return res.send(post)
+
+})
+
+server.delete("/posts",(req, res, next)=>{
+  const { id }= req.body;
+
+  if(!id){
+    return res.status(STATUS_USER_ERROR).json({error: "Mensaje de error"})
+  }
+
+  const post = posts.find(post => post.id === id)
+
+  if(!post) {
+    return res.status(STATUS_USER_ERROR).send({error: "Mensaje de error"})
+  }
+  
+  posts = posts.filter(post => post.id !== id)
+  return res.send({ success: true })
+})
+
+server.delete("/author",(req, res, next)=>{
+  const { author } = req.body;
+  if(!author){ 
+    return res.status(STATUS_USER_ERROR).json({error: "No existe el autor indicado"
+  })
+  }
+  const allPostsAuthor = posts.filter(post => post.author === author)
+  
+  if(!allPostsAuthor.length) {
+    return res.status(STATUS_USER_ERROR).send({error:"No existe el autor indicado"
+  })
+  }
+  posts = posts.filter( post => post.author !== author)
+  return res.send(allPostsAuthor)
 })
 
 // TODO: your code to handle requests
