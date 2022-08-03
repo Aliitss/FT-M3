@@ -199,6 +199,28 @@ function problemD () {
 })
 } //✅✅ PASADA
 
+
+/* const archivos = [];
+  filenames.forEach( (file) => {
+      archivos.push(promisifiedReadFile(file))
+    }
+  )
+  Promise.all(archivos)
+  .then(respuesta => {respuesta.forEach(r => blue(r))})
+  .catch(r => {magenta(new Error(r))})
+  .finally(() => console.log('done'))
+const archivos = [];
+  filenames.forEach( (file) => {
+      archivos.push(promisifiedReadFile(file))
+    }
+  )
+  Promise.all(archivos)
+  .then(respuesta => {respuesta.forEach(r => blue(r))})
+  .catch(r => {magenta(new Error(r))})
+  .finally(() => console.log('done'))
+}
+ */
+
 function problemE () {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *

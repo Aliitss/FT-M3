@@ -14,7 +14,7 @@ function* fizzBuzzGenerator(max) {
       i++ //al ser un while se le ordena a la i seguir incrementando por cada iteración para que no se genere un bucle infinito
     }
   }
-  // var fizzBuzz = fizzBuzzGenerator();    // ya se ejecita por los tests pero tomar en cuenta que esto se necesitaría para ejecutar directamente en la consola :)
+  // var fizzBuzz = fizzBuzzGenerator();    // ya se ejecuta por los tests pero tomar en cuenta que esto se necesitaría para ejecutar directamente en la consola :)
 
 
 module.exports = fizzBuzzGenerator;
